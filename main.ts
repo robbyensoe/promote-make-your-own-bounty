@@ -46,7 +46,10 @@ const url = (data as { url?: unknown } | null)?.url;
 if (typeof url !== 'string' || url.trim() === '') {
   die('POST.json must contain a non-empty "url" string');
 }
-if (!/^https:\/\/(x\.com|twitter\.com)\/\S+$/.test(url)) {
+// A post address has a fixed shape: https://x.com/<user>/status/<numeric id>
+// (an optional trailing slash is fine). Anything else on x.com — a profile
+// page, the home timeline, a search URL — is not a post and must not pass.
+if (!/^https:\/\/(x\.com|twitter\.com)\/[A-Za-z0-9_]+\/status\/\d+\/?$/.test(url)) {
   die(`"url" is not an X post address: ${url}`);
 }
 
